@@ -1,4 +1,3 @@
-<!--
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,42 +18,5 @@
            <a-gltf-model rotation="0 0 0 " position="0 -0.25 0" scale="1 1 1" src="#raccoonModel" animation-mixer>
          </a-entity>
     </a-scene> 
-  </body>
-</html>
--->
-
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-look-at-component@0.8.0/dist/aframe-look-at-component.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
-    <script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
-  </head>
-
-  <body style="margin: 0; overflow: hidden">
-    <a-scene
-      renderer="logarithmicDepthBuffer: true;"
-      embedded
-      loading-screen="enabled: true;"
-      arjs="sourceType: webcam; debugUIEnabled: true;"
-    >
-      <a-assets>
-        <a-asset-item id="raccoonModel" src="https://cdn.glitch.global/29101a80-8605-4e14-b24a-4a877c77ef37/scene.gltf"></a-asset-item>
-      </a-assets>
-
-      <a-entity
-        look-at="[gps-camera]"
-        gltf-model="#animated-asset"
-        scale="1.740659425825414 1.740659425825414 1.740659425825414"
-        gps-entity-place="latitude: 41.091846095170126; longitude: 29.002944361532414;"
-      >
-        <a-gltf-model rotation="0 0 0 " position="0 -0.25 0" scale="1 1 1" src="#raccoonModel" animation-mixer>
-      </a-entity>
-
-      <a-camera gps-camera rotation-reader></a-camera>
-    </a-scene>
   </body>
 </html>

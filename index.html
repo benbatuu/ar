@@ -1,3 +1,4 @@
+<!-- 
 <html>
 
 <head>
@@ -21,31 +22,69 @@
     </a-entity>
   </a-scene>
 </body>
-
-</html> 
-<!-- 
+-->
 <!DOCTYPE html>
 <html>
-
 <head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Image based tracking AR.js demo</title>
-  <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v7.0.0/dist/aframe-extras.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 </head>
 
-<body style="margin : 0px; overflow: hidden;">
-  <a-scene embedded arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;" vr-mode-ui="enabled: false;"
-    renderer="logarithmicDepthBuffer: true;">
-    <a-nft type="nft" url="https://github.com/benbatuu/ar/tree/main/target" smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
-      <a-entity gltf-model="https://cdn.glitch.global/29101a80-8605-4e14-b24a-4a877c77ef37/scene.gltf" scale="5 5 5" position="0 0 0">
-      </a-entity>
-    </a-nft>
-    <a-entity camera></a-entity>
+<body>
+  <a-scene mindar-image="imageTargetSrc: /target.mind; maxTrack: 2" color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights" vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
+    <a-assets>
+      <a-asset-item id="raccoonModel"
+        src="https://cdn.glitch.global/29101a80-8605-4e14-b24a-4a877c77ef37/scene.gltf"></a-asset-item>
+    </a-assets>
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <!-- Model Entity -->
+    <a-entity id="model" mindar-image-target="targetIndex: 0" gps-entity-place="latitude: 41.093022; longitude: 29.000957;"
+      visible="false"> <!-- Set initial visibility to false -->
+      <a-gltf-model rotation="0 0 0" position="0 -0.25 0" scale="1 1 1" src="#raccoonModel" animation-mixer>
+      </a-gltf-model>
+    </a-entity>
   </a-scene>
 
-</body>
+  <script>
+    // Target coordinates
+    const targetLatitude = 41.093022;
+    const targetLongitude = 29.000957;
+    const tolerance = 0.001; // Adjust this tolerance as needed for proximity checks
 
-</html>-->
+    // Function to calculate distance between two lat/lon points
+    function getDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Radius of the Earth in kilometers
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = 
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c; // Distance in kilometers
+    }
+
+    // Get user's current location
+    navigator.geolocation.getCurrentPosition(function(position) {
+      const userLatitude = position.coords.latitude;
+      const userLongitude = position.coords.longitude;
+
+      // Check if user is within the target range
+      const distance = getDistance(userLatitude, userLongitude, targetLatitude, targetLongitude);
+      if (distance <= tolerance) {
+        // User is within range, show the model
+        document.querySelector('#model').setAttribute('visible', 'true');
+      } else {
+        // User is out of range, show error message
+        alert('You are not within the required location to view this AR content.');
+      }
+    }, function(error) {
+      alert('Error getting your location. Please enable location services.');
+    });
+  </script>
+</body>
+</html>
